@@ -34,7 +34,7 @@
 %\usepackage{mathptmx} % assumes new font selection scheme installed
 % \usepackage{times} % assumes new font selection scheme installed
 \usepackage{bm}
-\usepackage{bbding} 
+\usepackage{bbding}
 % \usepackage{cite}
 \usepackage{diagbox}
 \usepackage[linesnumbered,ruled]{algorithm2e}
@@ -84,14 +84,14 @@
 
 \begin{document}
 \lstset{basicstyle = \ttfamily,columns=fullflexible,
-backgroundcolor = \color{light-yellow}
+  backgroundcolor = \color{light-yellow}
 }
 
 \begin{centering}
-    {\Large Assignment 1: Imitation Learning} \\
-    \vspace{.25cm}
-    \textbf{Andrew ID:} \texttt{YOUR ID} \\
-    \textbf{Collaborators:} \texttt{YOUR COLLABORATORS}\\ 
+  {\Large Assignment 1: Imitation Learning} \\
+  \vspace{.25cm}
+  \textbf{Andrew ID:} \texttt{mukaiy} \\
+  % \textbf{Collaborators:} \texttt{YOUR COLLABORATORS}\\
 \end{centering}
 
 \vspace{.5cm}
@@ -102,14 +102,14 @@ backgroundcolor = \color{light-yellow}
 \begin{table}[!h]
   \centering
   \caption{Report your result in this table.}
-    \begin{tabular}{cccccc}
+  \begin{tabular}{cccccc}
     \toprule[1.0pt]
     Metric/Env & Ant-v2 & Humanoid-v2 & Walker2d-v2 & Hopper-v2 & HalfCheetah-v2 \\
     \midrule
-    Mean  & xxx & xxx & xxx & xxx & xxx \\
-    Std.  & xxx & xxx & xxx  & xxx  & xxx \\
+    Mean       & xxx    & xxx         & xxx         & xxx       & xxx            \\
+    Std.       & xxx    & xxx         & xxx         & xxx       & xxx            \\
     \bottomrule[1.0pt]
-    \end{tabular}%
+  \end{tabular}%
   \label{tab:p2}%
 \end{table}%
 
@@ -118,36 +118,36 @@ backgroundcolor = \color{light-yellow}
 \begin{table}[htbp]
   \centering
   \caption{Fill your results in this table.}
-    \begin{tabular}{ccccc}
+  \begin{tabular}{ccccc}
     \toprule[1.0pt]
-    Env   & \multicolumn{2}{c}{Ant-v2} & \multicolumn{2}{c}{Humanoid-v2} \\
+    Env    & \multicolumn{2}{c}{Ant-v2} & \multicolumn{2}{c}{Humanoid-v2}               \\
     \midrule
-    Metric & Mean  & Std.  & Mean  & Std. \\
-    Expert & xxx & xxx & xxx & xxx \\
-    BC    & xxx & xxx & xxx & xxx \\
+    Metric & Mean                       & Std.                            & Mean & Std. \\
+    Expert & xxx                        & xxx                             & xxx  & xxx  \\
+    BC     & xxx                        & xxx                             & xxx  & xxx  \\
     \bottomrule[1.0pt]
-    \end{tabular}%
+  \end{tabular}%
   \label{tab:p3}%
 \end{table}%
 
 \subsection{Part 4 (20 pt)}
 \# TODO, fill in the \fref{fig:p4}, provide some analysis.
 
-\begin{figure*}[!h]
-	\centering
-\includegraphics[width=0.5\columnwidth]{figure_placeholder.pdf}
-	\caption{BC agent’s performance varies with the value of ??? parameter in ??? environment.}
-	\label{fig:p4}
+\begin{figure*}[!ht]
+  \centering
+  \includegraphics[width=0.5\columnwidth]{figure_placeholder.pdf}
+  \caption{BC agent's performance varies with the value of ??? parameter in ??? environment.}
+  \label{fig:p4}
 \end{figure*}
 
 \section{DAgger (35 pt)}
 \subsection{Part 2 (35 pt)}
 \# TODO, Report the results for Ant-v2 and Humanoid-v2 in \fref{fig:p5}:
-\begin{figure*}[!h]
-	\centering
-	\includegraphics[width=1.0\columnwidth]{figure_placeholder.pdf}
-	\caption{Learning curve, plotting the number of DAgger iterations vs. the policy’s mean return, with error bars to show the standard deviation. Please show the Ant-v2 environment on the left and the right part demonstrates Humanoid-v2 environment.}
-	\label{fig:p5}
+\begin{figure*}[!ht]
+  \centering
+  \includegraphics[width=1.0\columnwidth]{figure_placeholder.pdf}
+  \caption{Learning curve, plotting the number of DAgger iterations vs. the policy's mean return, with error bars to show the standard deviation. Please show the Ant-v2 environment on the left and the right part demonstrates Humanoid-v2 environment.}
+  \label{fig:p5}
 \end{figure*}
 
 \end{document}

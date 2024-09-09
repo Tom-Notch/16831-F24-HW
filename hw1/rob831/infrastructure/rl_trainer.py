@@ -1,14 +1,14 @@
-from collections import OrderedDict
-import numpy as np
+#!/usr/bin/env python3
+import pickle
 import time
+from collections import OrderedDict
 
 import gym
+import numpy as np
 import torch
-
 from rob831.infrastructure import pytorch_util as ptu
-from rob831.infrastructure.logger import Logger
 from rob831.infrastructure import utils
-import pickle 
+from rob831.infrastructure.logger import Logger
 
 # how many rollouts to save as videos to tensorboard
 MAX_NVIDEO = 2
@@ -16,7 +16,7 @@ MAX_NVIDEO = 2
 
 
 def make_env(env_name):
-    if env_name == 'Ant-v2':
+    if env_name == "Ant-v2":
         return gym.make(env_name)
     else:
         return gym.make(env_name)
@@ -32,56 +32,60 @@ class RL_Trainer(object):
 
         # Get params, create logger, create TF session
         self.params = params
-        self.logger = Logger(self.params['logdir'])
+        self.logger = Logger(self.params["logdir"])
 
         # Set random seeds
-        seed = self.params['seed']
+        seed = self.params["seed"]
         np.random.seed(seed)
         torch.manual_seed(seed)
-        ptu.init_gpu(
-            use_gpu=not self.params['no_gpu'],
-            gpu_id=self.params['which_gpu']
-        )
+        ptu.init_gpu(use_gpu=not self.params["no_gpu"], gpu_id=self.params["which_gpu"])
 
         #############
         ## ENV
         #############
 
         # Make the gym environment
-        self.env = make_env(self.params['env_name'])
+        self.env = make_env(self.params["env_name"])
         self.env.reset(seed=seed)
 
         # Maximum length for episodes
-        self.params['ep_len'] = self.params['ep_len'] or self.env.spec.max_episode_steps
+        self.params["ep_len"] = self.params["ep_len"] or self.env.spec.max_episode_steps
         # self.MAX_VIDEO_LEN = self.params['ep_len']
         self.MAX_VIDEO_LEN = 40
 
         # Is this env continuous, or self.discrete?
         discrete = isinstance(self.env.action_space, gym.spaces.Discrete)
-        self.params['agent_params']['discrete'] = discrete
+        self.params["agent_params"]["discrete"] = discrete
 
         # Observation and action sizes
         ob_dim = self.env.observation_space.shape[0]
         ac_dim = self.env.action_space.n if discrete else self.env.action_space.shape[0]
-        self.params['agent_params']['ac_dim'] = ac_dim
-        self.params['agent_params']['ob_dim'] = ob_dim
+        self.params["agent_params"]["ac_dim"] = ac_dim
+        self.params["agent_params"]["ob_dim"] = ob_dim
 
         # simulation timestep, will be used for video saving
-        if 'model' in dir(self.env):
-            self.fps = 1/self.env.model.opt.timestep
+        if "model" in dir(self.env):
+            self.fps = 1 / self.env.model.opt.timestep
         else:
-            self.fps = self.env.metadata['render_fps']
+            self.fps = self.env.metadata["render_fps"]
 
         #############
         ## AGENT
         #############
 
-        agent_class = self.params['agent_class']
-        self.agent = agent_class(self.env, self.params['agent_params'])
+        agent_class = self.params["agent_class"]
+        self.agent = agent_class(self.env, self.params["agent_params"])
 
-    def run_training_loop(self, n_iter, collect_policy, eval_policy,
-                        initial_expertdata=None, relabel_with_expert=False,
-                        start_relabel_with_expert=1, expert_policy=None):
+    def run_training_loop(
+        self,
+        n_iter,
+        collect_policy,
+        eval_policy,
+        initial_expertdata=None,
+        relabel_with_expert=False,
+        start_relabel_with_expert=1,
+        expert_policy=None,
+    ):
         """
         :param n_iter:  number of (dagger) iterations
         :param collect_policy:
@@ -97,33 +101,35 @@ class RL_Trainer(object):
         self.start_time = time.time()
 
         for itr in range(n_iter):
-            print("\n\n********** Iteration %i ************"%itr)
+            print("\n\n********** Iteration %i ************" % itr)
 
             # decide if videos should be rendered/logged at this iteration
-            if itr % self.params['video_log_freq'] == 0 and self.params['video_log_freq'] != -1:
+            if (
+                itr % self.params["video_log_freq"] == 0
+                and self.params["video_log_freq"] != -1
+            ):
                 self.log_video = True
             else:
                 self.log_video = False
 
             # decide if metrics should be logged
-            if itr % self.params['scalar_log_freq'] == 0:
+            if itr % self.params["scalar_log_freq"] == 0:
                 self.log_metrics = True
             else:
                 self.log_metrics = False
 
             # collect trajectories, to be used for training
             training_returns = self.collect_training_trajectories(
-                itr,
-                initial_expertdata,
-                collect_policy,
-                self.params['batch_size']
+                itr, initial_expertdata, collect_policy, self.params["batch_size"]
             )  # HW1: implement this function below
             paths, envsteps_this_batch, train_video_paths = training_returns
             self.total_envsteps += envsteps_this_batch
 
             # relabel the collected obs with actions from a provided expert policy
-            if relabel_with_expert and itr>=start_relabel_with_expert:
-                paths = self.do_relabel_with_expert(expert_policy, paths)  # HW1: implement this function below
+            if relabel_with_expert and itr >= start_relabel_with_expert:
+                paths = self.do_relabel_with_expert(
+                    expert_policy, paths
+                )  # HW1: implement this function below
 
             # add collected data to replay buffer
             self.agent.add_to_replay_buffer(paths)
@@ -135,23 +141,26 @@ class RL_Trainer(object):
             if self.log_video or self.log_metrics:
 
                 # perform logging
-                print('\nBeginning logging procedure...')
+                print("\nBeginning logging procedure...")
                 self.perform_logging(
-                    itr, paths, eval_policy, train_video_paths, training_logs)
+                    itr, paths, eval_policy, train_video_paths, training_logs
+                )
 
-                if self.params['save_params']:
-                    print('\nSaving agent params')
-                    self.agent.save('{}/policy_itr_{}.pt'.format(self.params['logdir'], itr))
+                if self.params["save_params"]:
+                    print("\nSaving agent params")
+                    self.agent.save(
+                        "{}/policy_itr_{}.pt".format(self.params["logdir"], itr)
+                    )
 
     ####################################
     ####################################
 
     def collect_training_trajectories(
-            self,
-            itr,
-            load_initial_expertdata,
-            collect_policy,
-            batch_size,
+        self,
+        itr,
+        load_initial_expertdata,
+        collect_policy,
+        batch_size,
     ):
         """
         :param itr:
@@ -181,17 +190,18 @@ class RL_Trainer(object):
         # note: here, we collect MAX_NVIDEO rollouts, each of length MAX_VIDEO_LEN
         train_video_paths = None
         if self.log_video:
-            print('\nCollecting train rollouts to be used for saving videos...')
+            print("\nCollecting train rollouts to be used for saving videos...")
             ## TODO look in utils and implement sample_n_trajectories
-            train_video_paths = utils.sample_n_trajectories(self.env, collect_policy, MAX_NVIDEO, self.MAX_VIDEO_LEN, True)
+            train_video_paths = utils.sample_n_trajectories(
+                self.env, collect_policy, MAX_NVIDEO, self.MAX_VIDEO_LEN, True
+            )
 
         return paths, envsteps_this_batch, train_video_paths
 
-
     def train_agent(self):
-        print('\nTraining agent using sampled data from replay buffer...')
+        print("\nTraining agent using sampled data from replay buffer...")
         all_logs = []
-        for train_step in range(self.params['num_agent_train_steps_per_iter']):
+        for train_step in range(self.params["num_agent_train_steps_per_iter"]):
 
             # TODO sample some data from the data buffer
             # HINT1: use the agent's sample function
@@ -206,7 +216,9 @@ class RL_Trainer(object):
         return all_logs
 
     def do_relabel_with_expert(self, expert_policy, paths):
-        print("\nRelabelling collected observations with labels from an expert policy...")
+        print(
+            "\nRelabelling collected observations with labels from an expert policy..."
+        )
 
         # TODO relabel collected obsevations (from our policy) with labels from an expert policy
         # HINT: query the policy (using the get_action function) with paths[i]["observation"]
@@ -217,23 +229,39 @@ class RL_Trainer(object):
     ####################################
     ####################################
 
-    def perform_logging(self, itr, paths, eval_policy, train_video_paths, training_logs):
+    def perform_logging(
+        self, itr, paths, eval_policy, train_video_paths, training_logs
+    ):
 
         # collect eval trajectories, for logging
         print("\nCollecting data for eval...")
-        eval_paths, eval_envsteps_this_batch = utils.sample_trajectories(self.env, eval_policy, self.params['eval_batch_size'], self.params['ep_len'])
+        eval_paths, eval_envsteps_this_batch = utils.sample_trajectories(
+            self.env, eval_policy, self.params["eval_batch_size"], self.params["ep_len"]
+        )
 
         # save eval rollouts as videos in tensorboard event file
         if self.log_video and train_video_paths != None:
-            print('\nCollecting video rollouts eval')
-            eval_video_paths = utils.sample_n_trajectories(self.env, eval_policy, MAX_NVIDEO, self.MAX_VIDEO_LEN, True)
+            print("\nCollecting video rollouts eval")
+            eval_video_paths = utils.sample_n_trajectories(
+                self.env, eval_policy, MAX_NVIDEO, self.MAX_VIDEO_LEN, True
+            )
 
-            #save train/eval videos
-            print('\nSaving train rollouts as videos...')
-            self.logger.log_paths_as_videos(train_video_paths, itr, fps=self.fps, max_videos_to_save=MAX_NVIDEO,
-                                            video_title='train_rollouts')
-            self.logger.log_paths_as_videos(eval_video_paths, itr, fps=self.fps,max_videos_to_save=MAX_NVIDEO,
-                                             video_title='eval_rollouts')
+            # save train/eval videos
+            print("\nSaving train rollouts as videos...")
+            self.logger.log_paths_as_videos(
+                train_video_paths,
+                itr,
+                fps=self.fps,
+                max_videos_to_save=MAX_NVIDEO,
+                video_title="train_rollouts",
+            )
+            self.logger.log_paths_as_videos(
+                eval_video_paths,
+                itr,
+                fps=self.fps,
+                max_videos_to_save=MAX_NVIDEO,
+                video_title="eval_rollouts",
+            )
 
         # save eval metrics
         if self.log_metrics:
@@ -264,15 +292,14 @@ class RL_Trainer(object):
             last_log = training_logs[-1]  # Only use the last log for now
             logs.update(last_log)
 
-
             if itr == 0:
                 self.initial_return = np.mean(train_returns)
             logs["Initial_DataCollection_AverageReturn"] = self.initial_return
 
             # perform the logging
             for key, value in logs.items():
-                print('{} : {}'.format(key, value))
+                print("{} : {}".format(key, value))
                 self.logger.log_scalar(value, key, itr)
-            print('Done logging...\n\n')
+            print("Done logging...\n\n")
 
             self.logger.flush()
