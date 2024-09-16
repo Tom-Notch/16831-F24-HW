@@ -335,6 +335,7 @@ COLCON_IGNORE
 AMENT_IGNORE
 
 ### VisualStudioCode ###
+.vscode/
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
@@ -664,3 +665,5 @@ TSWLatexianTemp*
 *.glstex
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,c++,python,jupyternotebooks,ros,ros2,matlab,git
+
+hw1/data
