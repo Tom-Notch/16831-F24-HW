@@ -181,6 +181,16 @@ class RL_Trainer(object):
             # ``` return loaded_paths, 0, None ```
             with open(load_initial_expertdata, "rb") as f:
                 loaded_paths = pickle.load(f)
+
+            # evaluate the expert policy on the initial expert data
+            expert_returns = [path["reward"].sum() for path in loaded_paths]
+
+            print(
+                "\nEvaluate the expert policy on the initial expert data:", end="\n\n"
+            )
+            print("Expert_AverageReturn : {}".format(np.mean(expert_returns)))
+            print("Expert_StdReturn : {}".format(np.std(expert_returns)), end="\n\n")
+
             envsteps_this_batch = 0
             train_video_paths = None
             return loaded_paths, envsteps_this_batch, train_video_paths
