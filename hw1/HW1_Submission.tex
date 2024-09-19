@@ -149,7 +149,7 @@
 Experiment with Humanoid failed because of the complexity of observation (state) space (376 vs Ant's 111), could not improve with noticeable margin.
 Walker 2D has far less DoF (17 vs Ant's 111), but the dynamics is non-trivial.
 
-All the experiment are conducted with \textit{--eval\_batch\_size 5000}.
+All the experiment are conducted with \textit{--eval\_batch\_size 5000}, detailed setup and results are in \tref{tab:p4}.
 
 \begin{table}[!h]
   \centering
@@ -189,7 +189,7 @@ The dominant factor is the MLP depth/size and training step, increasing batch si
 
 \section{DAgger (35 pt)}
 \subsection{Part 2 (35 pt)}
-\begin{figure*}[!h]
+\begin{figure*}[h!]
   \centering
   \begin{subfigure}[b]{.99\linewidth}
     \centering
@@ -205,7 +205,23 @@ The dominant factor is the MLP depth/size and training step, increasing batch si
   \label{fig:p5}
 \end{figure*}
 
-Result is shown in \fref{fig:p5}.
+\begin{figure*}[h!]
+  \centering
+  \begin{subfigure}[b]{.49\linewidth}
+    \centering
+    \includegraphics[width=\columnwidth]{figs/ant_DAgger.png}
+    \caption{Ant-v2.}
+  \end{subfigure}
+  \begin{subfigure}[b]{.49\linewidth}
+    \centering
+    \includegraphics[width=\columnwidth]{figs/humanoid_DAgger.png}
+    \caption{Humanoid-v2.}
+  \end{subfigure}
+  \caption{Mean Return vs Train Iteration with error bar and expert performance.}
+  \label{fig:p6}
+\end{figure*}
+
+Result is shown in \fref{fig:p5} and \fref{fig:p6}.
 
 \textbf{Analysis:}
 
