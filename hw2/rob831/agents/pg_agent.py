@@ -1,10 +1,10 @@
 import numpy as np
-
 from rob831.agents.base_agent import BaseAgent
-from rob831.policies.MLP_policy import MLPPolicyPG
 from rob831.infrastructure.replay_buffer import ReplayBuffer
+from rob831.infrastructure.utils import normalize
+from rob831.infrastructure.utils import unnormalize
+from rob831.policies.MLP_policy import MLPPolicyPG
 
-from rob831.infrastructure.utils import normalize, unnormalize
 
 class PGAgent(BaseAgent):
     def __init__(self, env, agent_params):
@@ -13,31 +13,30 @@ class PGAgent(BaseAgent):
         # init vars
         self.env = env
         self.agent_params = agent_params
-        self.gamma = self.agent_params['gamma']
-        self.standardize_advantages = self.agent_params['standardize_advantages']
-        self.nn_baseline = self.agent_params['nn_baseline']
-        self.reward_to_go = self.agent_params['reward_to_go']
-        self.gae_lambda = self.agent_params['gae_lambda']
+        self.gamma = self.agent_params["gamma"]
+        self.standardize_advantages = self.agent_params["standardize_advantages"]
+        self.nn_baseline = self.agent_params["nn_baseline"]
+        self.reward_to_go = self.agent_params["reward_to_go"]
+        self.gae_lambda = self.agent_params["gae_lambda"]
 
         # actor/policy
         self.actor = MLPPolicyPG(
-            self.agent_params['ac_dim'],
-            self.agent_params['ob_dim'],
-            self.agent_params['n_layers'],
-            self.agent_params['size'],
-            discrete=self.agent_params['discrete'],
-            learning_rate=self.agent_params['learning_rate'],
-            nn_baseline=self.agent_params['nn_baseline']
+            self.agent_params["ac_dim"],
+            self.agent_params["ob_dim"],
+            self.agent_params["n_layers"],
+            self.agent_params["size"],
+            discrete=self.agent_params["discrete"],
+            learning_rate=self.agent_params["learning_rate"],
+            nn_baseline=self.agent_params["nn_baseline"],
         )
 
         # replay buffer
         self.replay_buffer = ReplayBuffer(1000000)
 
     def train(self, observations, actions, rewards_list, next_observations, terminals):
-
         """
-            Training a PG agent refers to updating its actor using the given observations/actions
-            and the calculated qvals/advantages that come from the seen rewards.
+        Training a PG agent refers to updating its actor using the given observations/actions
+        and the calculated qvals/advantages that come from the seen rewards.
         """
 
         # TODO: update the PG actor/policy using the given batch of data, and
@@ -45,28 +44,26 @@ class PGAgent(BaseAgent):
 
         # HINT1: use helper functions to compute qvals and advantages
         # HINT2: look at the MLPPolicyPG class for how to update the policy
-            # and obtain a train_log
+        # and obtain a train_log
 
         raise NotImplementedError
 
         return train_log
 
-
     def calculate_q_vals(self, rewards_list):
-
         """
-            Monte Carlo estimation of the Q function.
+        Monte Carlo estimation of the Q function.
         """
 
         # TODO: return the estimated qvals based on the given rewards, using
-            # either the full trajectory-based estimator or the reward-to-go
-            # estimator
+        # either the full trajectory-based estimator or the reward-to-go
+        # estimator
 
         # HINT1: rewards_list is a list of lists of rewards. Each inner list
-            # is a list of rewards for a single trajectory.
+        # is a list of rewards for a single trajectory.
         # HINT2: use the helper functions self._discounted_return and
-            # self._discounted_cumsum (you will need to implement these). These
-            # functions should only take in a single list for a single trajectory.
+        # self._discounted_cumsum (you will need to implement these). These
+        # functions should only take in a single list for a single trajectory.
 
         # Case 1: trajectory-based PG
         # Estimate Q^{pi}(s_t, a_t) by the total discounted reward summed over entire trajectory
@@ -74,7 +71,7 @@ class PGAgent(BaseAgent):
         # ordering as observations, actions, etc.
 
         if not self.reward_to_go:
-            #use the whole traj for each timestep
+            # use the whole traj for each timestep
             raise NotImplementedError
 
         # Case 2: reward-to-go PG
@@ -85,9 +82,8 @@ class PGAgent(BaseAgent):
         return q_values  # return an array
 
     def estimate_advantage(self, obs, rewards_list, q_values, terminals):
-
         """
-            Computes advantages by (possibly) using GAE, or subtracting a baseline from the estimated Q values
+        Computes advantages by (possibly) using GAE, or subtracting a baseline from the estimated Q values
         """
 
         # Estimate the advantage when nn_baseline is True,
@@ -99,8 +95,8 @@ class PGAgent(BaseAgent):
             ## to prevent silent broadcasting errors
             assert values_normalized.ndim == q_values.ndim
             ## TODO: values were trained with standardized q_values, so ensure
-                ## that the predictions have the same mean and standard deviation as
-                ## the current batch of q_values
+            ## that the predictions have the same mean and standard deviation as
+            ## the current batch of q_values
 
             raise NotImplementedError
             values = TODO
@@ -119,12 +115,12 @@ class PGAgent(BaseAgent):
 
                 for i in reversed(range(batch_size)):
                     ## TODO: recursively compute advantage estimates starting from
-                        ## timestep T.
+                    ## timestep T.
                     ## HINT 1: use terminals to handle edge cases. terminals[i]
-                        ## is 1 if the state is the last in its trajectory, and
-                        ## 0 otherwise.
+                    ## is 1 if the state is the last in its trajectory, and
+                    ## 0 otherwise.
                     ## HINT 2: self.gae_lambda is the lambda value in the
-                        ## GAE formula
+                    ## GAE formula
                     raise NotImplementedError
 
                 # remove dummy advantage
@@ -164,11 +160,11 @@ class PGAgent(BaseAgent):
 
     def _discounted_return(self, rewards):
         """
-            Helper function
+        Helper function
 
-            Input: list of rewards {r_0, r_1, ..., r_t', ... r_T} from a single rollout of length T
+        Input: list of rewards {r_0, r_1, ..., r_t', ... r_T} from a single rollout of length T
 
-            Output: array where each index t contains sum_{t'=0}^T gamma^t' r_{t'}
+        Output: array where each index t contains sum_{t'=0}^T gamma^t' r_{t'}
         """
 
         # TODO: create discounted_returns
@@ -178,14 +174,14 @@ class PGAgent(BaseAgent):
 
     def _discounted_cumsum(self, rewards):
         """
-            Helper function which
-            -takes a list of rewards {r_0, r_1, ..., r_t', ... r_T},
-            -and returns an array where the entry in each index t' is sum_{t'=t}^T gamma^(t'-t) * r_{t'}
+        Helper function which
+        -takes a list of rewards {r_0, r_1, ..., r_t', ... r_T},
+        -and returns an array where the entry in each index t' is sum_{t'=t}^T gamma^(t'-t) * r_{t'}
         """
 
         # TODO: create `discounted_cumsums`
         # HINT: it is possible to write a vectorized solution, but a solution
-            # using a for loop is also fine
+        # using a for loop is also fine
         raise NotImplementedError
 
         return discounted_cumsums

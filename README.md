@@ -1,1 +1,7 @@
-Assignments for [CMU 16-831 Introduction to Robot Learning](https://16-831.github.io/fall24/).
+# 16-831 Introduction to Robot Learning Homework 2
+
+[![pre-commit](https://github.com/Tom-Notch/16831-F24-HW/actions/workflows/pre-commit.yml/badge.svg)](https://github.com/Tom-Notch/16831-F24-HW/actions/workflows/pre-commit.yml)
+
+## Author
+
+- **Mukai (Tom Notch) Yu**, <mukaiy@andrew.cmu.edu>
