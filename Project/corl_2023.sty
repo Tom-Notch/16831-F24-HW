@@ -1,4 +1,4 @@
-% File: corl_2023.sty 
+% File: corl_2023.sty
 %
 % Latex templates for the Conference on Robot Learning (CoRL)
 %
@@ -10,7 +10,7 @@
 %	       Main changes:
 %	       - The abstract is more compact compared to NIPS/ICML
 %	       - References are by default using natbib with squared numbers (e.g., [1])
-%	       - DOI fields from the bibtex are automatically converted to hyperlinks 
+%	       - DOI fields from the bibtex are automatically converted to hyperlinks
 %	       to the corresponding page
 %	       - acknowledgments are now a command, and the corresponding subsubsection is
 %	       automatically included only in the final version
@@ -26,7 +26,7 @@
 
 %
 % TODO: nohyperref is not working at the moment
-% 
+%
 
 \NeedsTeXFormat{LaTeX2e}
 
@@ -119,7 +119,7 @@
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 
+%
 
 % fonts
 \renewcommand{\rmdefault}{ptm}
@@ -128,10 +128,10 @@
 % Create acknowledgments -- only if the option 'final' is activated
 \providecommand{\acknowledgments}{}
 \renewcommand{\acknowledgments}[1]{%
-\if@conferencefinal% 
+\if@conferencefinal%
 \subsubsection*{Acknowledgments} #1
 \fi
-\if@preprinttype% 
+\if@preprinttype%
 \subsubsection*{Acknowledgments} #1
 \fi
 }

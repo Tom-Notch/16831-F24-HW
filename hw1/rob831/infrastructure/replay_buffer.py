@@ -32,44 +32,43 @@ class ReplayBuffer(object):
         # convert new rollouts into their component arrays, and append them onto
         # our arrays
         observations, actions, rewards, next_observations, terminals = (
-            convert_listofrollouts(paths, concat_rew))
+            convert_listofrollouts(paths, concat_rew)
+        )
 
         if self.obs is None:
-            self.obs = observations[-self.max_size:]
-            self.acs = actions[-self.max_size:]
-            self.rews = rewards[-self.max_size:]
-            self.next_obs = next_observations[-self.max_size:]
-            self.terminals = terminals[-self.max_size:]
+            self.obs = observations[-self.max_size :]
+            self.acs = actions[-self.max_size :]
+            self.rews = rewards[-self.max_size :]
+            self.next_obs = next_observations[-self.max_size :]
+            self.terminals = terminals[-self.max_size :]
         else:
-            self.obs = np.concatenate([self.obs, observations])[-self.max_size:]
-            self.acs = np.concatenate([self.acs, actions])[-self.max_size:]
+            self.obs = np.concatenate([self.obs, observations])[-self.max_size :]
+            self.acs = np.concatenate([self.acs, actions])[-self.max_size :]
             if concat_rew:
-                self.rews = np.concatenate(
-                    [self.rews, rewards]
-                )[-self.max_size:]
+                self.rews = np.concatenate([self.rews, rewards])[-self.max_size :]
             else:
                 if isinstance(rewards, list):
                     self.rews += rewards
                 else:
                     self.rews.append(rewards)
-                self.rews = self.rews[-self.max_size:]
-            self.next_obs = np.concatenate(
-                [self.next_obs, next_observations]
-            )[-self.max_size:]
-            self.terminals = np.concatenate(
-                [self.terminals, terminals]
-            )[-self.max_size:]
+                self.rews = self.rews[-self.max_size :]
+            self.next_obs = np.concatenate([self.next_obs, next_observations])[
+                -self.max_size :
+            ]
+            self.terminals = np.concatenate([self.terminals, terminals])[
+                -self.max_size :
+            ]
 
     ########################################
     ########################################
 
     def sample_random_data(self, batch_size):
         assert (
-                self.obs.shape[0]
-                == self.acs.shape[0]
-                == self.rews.shape[0]
-                == self.next_obs.shape[0]
-                == self.terminals.shape[0]
+            self.obs.shape[0]
+            == self.acs.shape[0]
+            == self.rews.shape[0]
+            == self.next_obs.shape[0]
+            == self.terminals.shape[0]
         )
 
         ## TODO return batch_size number of random entries from each of the 5 component arrays above [OK]
@@ -78,7 +77,6 @@ class ReplayBuffer(object):
         ## HINT 3: look at the sample_recent_data function below
 
         return TODO, TODO, TODO, TODO, TODO
-
 
     def sample_recent_data(self, batch_size=1):
         return (
