@@ -87,7 +87,22 @@ def sample_trajectory(
                 time.sleep(env.model.opt.timestep)
 
         # TODO: get this from hw1
-        raise NotImplementedError
+        obs.append(ob)
+        ac = policy.get_action(ob)
+        ac = ac[0]
+        acs.append(ac)
+        ob, rew, done, _ = env.step(ac)
+        # add the observation after taking a step to next_obs
+        next_obs.append(ob)
+        rewards.append(rew)
+        steps += 1
+        # If the episode ended, the corresponding terminal value is 1
+        # otherwise, it is 0
+        if done or steps > max_path_length:
+            terminals.append(1)
+            break
+        else:
+            terminals.append(0)
     return Path(obs, image_obs, acs, rewards, next_obs, terminals)
 
 
@@ -100,14 +115,44 @@ def sample_trajectories(
     render_mode=("rgb_array"),
 ):
     # TODO: get this from hw1
-    raise NotImplementedError
+    """
+    Collect rollouts until we have collected min_timesteps_per_batch steps.
+    """
+    timesteps_this_batch = 0
+    paths = []
+    while timesteps_this_batch < min_timesteps_per_batch:
+
+        # collect rollout
+        path = sample_trajectory(env, policy, max_path_length, render, render_mode)
+        paths.append(path)
+
+        # count steps
+        timesteps_this_batch += get_pathlength(path)
+        print(
+            "At timestep:    ",
+            timesteps_this_batch,
+            "/",
+            min_timesteps_per_batch,
+            end="\r",
+        )
+
+    return paths, timesteps_this_batch
 
 
 def sample_n_trajectories(
     env, policy, ntraj, max_path_length, render=False, render_mode=("rgb_array")
 ):
     # TODO: get this from hw1
-    raise NotImplementedError
+    """
+    Collect ntraj rollouts.
+    """
+    paths = []
+    for i in range(ntraj):
+        # collect rollout
+        path = sample_trajectory(env, policy, max_path_length, render, render_mode)
+        paths.append(path)
+
+    return paths
 
 
 ############################################
