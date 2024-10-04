@@ -131,6 +131,7 @@ class PGAgent(BaseAgent):
                 ## estimates, with dummy T+1 value for simpler recursive calculation
                 batch_size = obs.shape[0]
                 advantages = np.zeros(batch_size + 1)
+                advantage_buffer = 0
 
                 for i in reversed(range(batch_size)):
                     ## TODO: recursively compute advantage estimates starting from
@@ -140,7 +141,21 @@ class PGAgent(BaseAgent):
                     ## 0 otherwise.
                     ## HINT 2: self.gae_lambda is the lambda value in the
                     ## GAE formula
-                    raise NotImplementedError
+
+                    if terminals[i]:
+                        advantage_buffer = 0  # Reset at terminal states
+
+                    # if terminal state then V(s_T) = 0, only t \in [0, T-1] are valid
+                    delta = (
+                        rewards[i]
+                        + self.gamma * values[i + 1] * (1 - terminals[i])
+                        - values[i]
+                    )
+                    advantage_buffer = (
+                        delta + self.gamma * self.gae_lambda * advantage_buffer
+                    )
+
+                    advantages[i] = advantage_buffer
 
                 # remove dummy advantage
                 advantages = advantages[:-1]

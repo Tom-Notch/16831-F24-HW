@@ -175,17 +175,27 @@ class MLPPolicyPG(MLPPolicy):
             ## ptu.from_numpy before using it in the loss
             q_values = (q_values - np.mean(q_values)) / np.std(q_values)
 
-            self.baseline_optimizer.zero_grad()
+            # Recursive baseline training until convergence, because of contraction
+            loss = torch.inf
+            num_baseline_iter = 0
 
-            loss = self.baseline_loss(
-                self.baseline(observations), ptu.from_numpy(q_values)
-            )
-            loss.backward()
+            # Avoid too many iterations
+            while loss > 1e-1 and num_baseline_iter < 10000:
 
-            self.baseline_optimizer.step()
+                self.baseline_optimizer.zero_grad()
+
+                loss = self.baseline_loss(
+                    self.baseline(observations).squeeze(), ptu.from_numpy(q_values)
+                )
+                loss.backward()
+
+                self.baseline_optimizer.step()
+
+                num_baseline_iter += 1
 
         train_log = {
             "Training Loss": ptu.to_numpy(policy_loss),
+            "Baseline convergence iterations": num_baseline_iter,
             "Baseline Loss": ptu.to_numpy(loss),
         }
         return train_log
