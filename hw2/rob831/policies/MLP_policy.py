@@ -145,6 +145,8 @@ class MLPPolicyPG(MLPPolicy):
         actions = ptu.from_numpy(actions)
         advantages = ptu.from_numpy(advantages)
 
+        train_log = {}
+
         # TODO: update the policy using policy gradient
         # HINT1: Recall that the expression that we want to MAXIMIZE
         # is the expectation over collected trajectories of:
@@ -193,11 +195,11 @@ class MLPPolicyPG(MLPPolicy):
 
                 num_baseline_iter += 1
 
-        train_log = {
-            "Training Loss": ptu.to_numpy(policy_loss),
-            "Baseline convergence iterations": num_baseline_iter,
-            "Baseline Loss": ptu.to_numpy(loss),
-        }
+            train_log["Baseline convergence iterations"] = num_baseline_iter
+            train_log["Baseline Loss"] = ptu.to_numpy(loss)
+
+        train_log["Training Loss"] = ptu.to_numpy(policy_loss)
+
         return train_log
 
     def run_baseline_prediction(self, observations):
