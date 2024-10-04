@@ -173,10 +173,20 @@ class MLPPolicyPG(MLPPolicy):
             ## updating the baseline. Remember to 'zero_grad' first
             ## HINT2: You will need to convert the targets into a tensor using
             ## ptu.from_numpy before using it in the loss
-            raise NotImplementedError
+            q_values = (q_values - np.mean(q_values)) / np.std(q_values)
+
+            self.baseline_optimizer.zero_grad()
+
+            loss = self.baseline_loss(
+                self.baseline(observations), ptu.from_numpy(q_values)
+            )
+            loss.backward()
+
+            self.baseline_optimizer.step()
 
         train_log = {
             "Training Loss": ptu.to_numpy(policy_loss),
+            "Baseline Loss": ptu.to_numpy(loss),
         }
         return train_log
 
