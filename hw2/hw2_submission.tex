@@ -110,31 +110,39 @@ python rob831/scripts/run_hw2.py --env_name CartPole-v0 -n 100 -b 5000 \
 \begin{answer}[title=Q5.1.2.1,height=9.5cm,width=\linewidth]
     % TODO
     \centering
-    \includegraphics[height=8cm]{example-image-a}
+    \includegraphics[width=.99\linewidth]{figs/Q5_small_batch.png}
 \end{answer}
 
 \subsubsubsection{Large batch -- \lbrack5 points\rbrack}
 \begin{answer}[title=Q5.1.2.2,height=9.5cm,width=\linewidth]
     % TODO
     \centering
-    \includegraphics[height=8cm]{example-image-a}
+    \includegraphics[width=.99\linewidth]{figs/Q5_large_batch.png}
 \end{answer}
 
 \subsubsection{Analysis}
 
 \subsubsubsection{Value estimator -- \lbrack5 points\rbrack}
 \begin{answer}[title=Q5.1.3.1,height=4cm,width=\linewidth]
-    % TODO
+    Obviously reward-to-go because of causality and smaller variance.
 \end{answer}
 
 \subsubsubsection{Advantage standardization -- \lbrack5 points\rbrack}
 \begin{answer}[title=Q5.1.3.2,height=4cm,width=\linewidth]
-    % TODO
+    Yes, it does help.
+    It helps to stabilize the learning process by reducing the variance of the advantage estimates.
+
+    One thing I don't understand is why changing the bias has no significant impact on training, since standardization changes the mean.
+    Each reward is a function of both state and action, so moving the mean shouldn't be just like adding a state-dependent bias, e.g., $V(s)$, right?
+
+    I guess it's because this process only "slightly" biases the advantage estimates, pretty much like the effect of not having accurate $V(s)$ in the actor-critic method.
 \end{answer}
 
 \subsubsubsection{Batch size -- \lbrack5 points\rbrack}
 \begin{answer}[title=Q5.1.3.3,height=4cm,width=\linewidth]
-    % TODO
+    I would say that batch size marginally helps to improve the policy faster, and I think the improvement is non-linear, which is why we don't see the time-to-plateau gets $\frac{1}{5}$ed.
+
+    But more data does help the experiment without reward-to-go to converge faster, since it typically needs more rollouts, i.e., more state/action/reward tuples, because it typically has higher variance.
 \end{answer}
 
 \subsection{Experiment 2 (InvertedPendulum) -- \lbrack15 points total\rbrack}
@@ -146,21 +154,56 @@ python rob831/scripts/run_hw2.py --env_name CartPole-v0 -n 100 -b 5000 \
 [framesep=2mm, fontsize=\scriptsize, breaklines]
 {bash}
 python rob831/scripts/run_hw2.py --env_name InvertedPendulum-v4 \
-    --ep_len 1000 --discount 0.9 -n 100 -l 2 -s 64 -b <b*> -lr <r*> -rtg \
-    --exp_name q2_b<b*>_r<r*>
+    --ep_len 1000 --discount 0.9 -n 100 -l 2 -s 64 -b 10000 -lr 0.001 -rtg \
+    --exp_name q2_b_10000_r_0.001
+
+python rob831/scripts/run_hw2.py --env_name InvertedPendulum-v4 \
+    --ep_len 1000 --discount 0.9 -n 100 -l 2 -s 64 -b 1000 -lr 0.001 -rtg \
+    --exp_name q2_b_1000_r_0.001
+
+python rob831/scripts/run_hw2.py --env_name InvertedPendulum-v4 \
+    --ep_len 1000 --discount 0.9 -n 100 -l 2 -s 64 -b 1000 -lr 0.01 -rtg \
+    --exp_name q2_b_1000_r_0.01
+
+python rob831/scripts/run_hw2.py --env_name InvertedPendulum-v4 \
+    --ep_len 1000 --discount 0.9 -n 100 -l 2 -s 64 -b 1000 -lr 0.05 -rtg \
+    --exp_name q2_b_1000_r_0.05
+
+python rob831/scripts/run_hw2.py --env_name InvertedPendulum-v4 \
+    --ep_len 1000 --discount 0.9 -n 100 -l 2 -s 64 -b 1000 -lr 0.1 -rtg \
+    --exp_name q2_b_1000_r_0.1
+
+python rob831/scripts/run_hw2.py --env_name InvertedPendulum-v4 \
+    --ep_len 1000 --discount 0.9 -n 100 -l 2 -s 64 -b 100 -lr 0.1 -rtg \
+    --exp_name q2_b_100_r_0.1
+
+python rob831/scripts/run_hw2.py --env_name InvertedPendulum-v4 \
+    --ep_len 1000 --discount 0.9 -n 100 -l 2 -s 64 -b 2000 -lr 0.01 -rtg \
+    --exp_name q2_b_2000_r_0.01
+
+python rob831/scripts/run_hw2.py --env_name InvertedPendulum-v4 \
+    --ep_len 1000 --discount 0.9 -n 100 -l 2 -s 64 -b 500 -lr 0.01 -rtg \
+    --exp_name q2_b_500_r_0.01
+
+python rob831/scripts/run_hw2.py --env_name InvertedPendulum-v4 \
+    --ep_len 1000 --discount 0.9 -n 100 -l 2 -s 64 -b 800 -lr 0.01 -rtg \
+    --exp_name q2_b_800_r_0.01
 \end{minted}
 \end{answer}
 
 \subsubsection{smallest \textbf{b*} and largest \textbf{r*} (same run) -- \lbrack5 points\rbrack}
 \begin{answer}[title=Q5.2.2,height=4cm,width=\linewidth]
     % TODO
+    500
+
+    0.01
 \end{answer}
 
 \subsubsection{Plot -- \lbrack5 points\rbrack}
 \begin{answer}[title=Q5.2.3,height=10cm,width=\linewidth]
     % TODO
     \centering
-    \includegraphics[height=8cm]{example-image-a}
+    \includegraphics[width=.99\linewidth]{figs/Q5_exp_2.png}
 \end{answer}
 
 \setcounter{section}{6}
