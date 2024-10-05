@@ -193,7 +193,12 @@ class RL_Trainer(object):
 
         print("\nCollecting data to be used for training...")
         paths, envsteps_this_batch = utils.sample_trajectories(
-            self.env, collect_policy, num_transitions_to_sample, self.params["ep_len"]
+            self.env,
+            collect_policy,
+            num_transitions_to_sample,
+            self.params["ep_len"],
+            parallel=self.params["parallel"],
+            max_num_workers=self.params["max_num_workers"],
         )
 
         train_video_paths = None
@@ -230,7 +235,12 @@ class RL_Trainer(object):
         # collect eval trajectories, for logging
         print("\nCollecting data for eval...")
         eval_paths, eval_envsteps_this_batch = utils.sample_trajectories(
-            self.env, eval_policy, self.params["eval_batch_size"], self.params["ep_len"]
+            self.env,
+            eval_policy,
+            self.params["eval_batch_size"],
+            self.params["ep_len"],
+            parallel=self.params["parallel"],
+            max_num_workers=self.params["max_num_workers"],
         )
 
         # save eval rollouts as videos in tensorboard event file

@@ -1,3 +1,4 @@
+import multiprocessing as mp
 import os
 import time
 
@@ -58,6 +59,7 @@ class PG_Trainer(object):
 
 
 def main():
+    mp.set_start_method("spawn", force=True)
 
     import argparse
 
@@ -97,6 +99,9 @@ def main():
 
     parser.add_argument("--save_params", action="store_true")
     parser.add_argument("--action_noise_std", type=float, default=0)
+
+    parser.add_argument("--parallel", "-p", action="store_true")
+    parser.add_argument("--max_num_workers", type=int, default=mp.cpu_count() - 1)
 
     args = parser.parse_args()
 

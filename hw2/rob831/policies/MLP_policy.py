@@ -4,7 +4,6 @@ import itertools
 import numpy as np
 import torch
 from rob831.infrastructure import pytorch_util as ptu
-from rob831.infrastructure.utils import normalize
 from rob831.policies.base_policy import BasePolicy
 from torch import distributions
 from torch import nn
@@ -139,6 +138,22 @@ class MLPPolicyPG(MLPPolicy):
 
         super().__init__(ac_dim, ob_dim, n_layers, size, **kwargs)
         self.baseline_loss = nn.MSELoss()
+
+    def copy(self):
+        # Create a new instance with the same initialization parameters
+        new_policy = MLPPolicyPG(
+            ac_dim=self.ac_dim,
+            ob_dim=self.ob_dim,
+            n_layers=self.n_layers,
+            size=self.size,
+            discrete=self.discrete,
+            learning_rate=self.learning_rate,
+            training=self.training,
+            nn_baseline=self.nn_baseline,
+        )
+        # Copy the state dict
+        new_policy.load_state_dict(self.state_dict())
+        return new_policy
 
     def update(self, observations, actions, advantages, q_values=None):
         observations = ptu.from_numpy(observations)

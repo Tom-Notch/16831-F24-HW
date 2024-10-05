@@ -1,7 +1,11 @@
 import copy
+import multiprocessing as mp
 import time
+from random import sample
 
+import gym
 import numpy as np
+from rob831.infrastructure import pytorch_util as ptu
 
 ############################################
 ############################################
@@ -113,30 +117,147 @@ def sample_trajectories(
     max_path_length,
     render=False,
     render_mode=("rgb_array"),
+    parallel: bool = False,
+    initial_num_workers: int = 10,
+    max_num_workers: int = mp.cpu_count() - 1,
 ):
     # TODO: get this from hw1
     """
     Collect rollouts until we have collected min_timesteps_per_batch steps.
     """
-    timesteps_this_batch = 0
-    paths = []
-    while timesteps_this_batch < min_timesteps_per_batch:
 
-        # collect rollout
-        path = sample_trajectory(env, policy, max_path_length, render, render_mode)
-        paths.append(path)
+    if parallel:
+        # Serialize the policy parameters if necessary
+        # For example, if using PyTorch or TensorFlow, extract model weights
+        # We'll assume here that the policy can be deep-copied
 
-        # count steps
-        timesteps_this_batch += get_pathlength(path)
-        print(
-            "At timestep:    ",
-            timesteps_this_batch,
-            "/",
-            min_timesteps_per_batch,
-            end="\r",
+        # Shared variables managed by multiprocessing.Manager()
+        manager = mp.Manager()
+        paths = manager.list()
+        timesteps_counter = manager.Value("i", 0)
+        lock = manager.Lock()
+
+        print(f"Average path length: {sample_trajectories.average_path_length}")
+
+        num_workers = (
+            initial_num_workers
+            if sample_trajectories.average_path_length is None
+            else int(
+                min(
+                    min_timesteps_per_batch // sample_trajectories.average_path_length
+                    + 1,
+                    max_num_workers,
+                )
+            )
         )
 
+        print(f"Using {num_workers} worker(s) for sampling trajectories.")
+
+        # Create worker processes
+        processes = []
+        for worker_id in range(num_workers):
+            p = mp.Process(
+                target=worker_sample_trajectories,
+                args=(
+                    worker_id,
+                    env.spec.id,
+                    policy,
+                    max_path_length,
+                    render,
+                    render_mode,
+                    lock,
+                    timesteps_counter,
+                    paths,
+                    min_timesteps_per_batch,
+                ),
+            )
+            processes.append(p)
+            p.start()
+
+        # Wait for all workers to finish
+        for p in processes:
+            p.join()
+
+        # Convert shared paths list back to a regular list
+        paths = list(paths)
+        timesteps_this_batch = timesteps_counter.value
+        sample_trajectories.average_path_length = np.mean(
+            [get_pathlength(path) for path in paths]
+        )
+
+        print(
+            f"\nCollected timesteps: {timesteps_this_batch}/{min_timesteps_per_batch}"
+        )
+        print(f"Average path length: {sample_trajectories.average_path_length}")
+
+    else:
+        timesteps_this_batch = 0
+        paths = []
+        while timesteps_this_batch < min_timesteps_per_batch:
+
+            # collect rollout
+            path = sample_trajectory(env, policy, max_path_length, render, render_mode)
+            paths.append(path)
+
+            # count steps
+            timesteps_this_batch += get_pathlength(path)
+            print(
+                "At timestep:    ",
+                timesteps_this_batch,
+                "/",
+                min_timesteps_per_batch,
+                end="\r",
+            )
+
     return paths, timesteps_this_batch
+
+
+sample_trajectories.average_path_length = None
+
+
+def worker_sample_trajectories(
+    worker_id,
+    env_id,
+    policy,
+    max_path_length,
+    render,
+    render_mode,
+    lock,
+    timesteps_counter,
+    paths,
+    min_timesteps_per_batch,
+):
+    # Create a new environment instance
+    worker_env = gym.make(env_id)
+
+    # Have to reinstantiate the policy in the worker
+    worker_policy = policy.copy()
+    worker_policy.to(ptu.device)
+
+    while True:
+        # Sample a trajectory
+        path = sample_trajectory(
+            worker_env, worker_policy, max_path_length, render, render_mode
+        )
+
+        # Get the length of the trajectory
+        path_length = get_pathlength(path)
+
+        # Synchronize access to shared variables
+        with lock:
+            # Check if we've already collected enough timesteps
+            if timesteps_counter.value >= min_timesteps_per_batch:
+                break  # Exit the loop if we've collected enough data
+            # Add the trajectory to the shared paths list
+            paths.append(path)
+            # Update the shared timesteps counter
+            timesteps_counter.value += path_length
+
+            # Optionally, print progress
+            # print(f"Worker {worker_id}: Collected {timesteps_counter.value}/{min_timesteps_per_batch} timesteps", end='\r')
+
+    # Close the worker's environment
+    worker_env.close()
 
 
 def sample_n_trajectories(
