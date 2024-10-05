@@ -352,7 +352,7 @@ python rob831/scripts/run_hw2.py --env_name HalfCheetah-v4 --ep_len 150 \
 {python}
 # $\lambda \in [0,0.95,0.99,1]$
 python rob831/scripts/run_hw2.py \
-    --env_name Hopper-v4 --ep_len 1000
+    --env_name Hopper-v4 --ep_len 1000 \
     --discount 0.99 -n 300 -l 2 -s 32 -b 2000 -lr 0.001 \
     --reward_to_go --nn_baseline --action_noise_std 0.5 --gae_lambda <|$\lambda$|> \
     --exp_name q5_b2000_r0.001_lambda<|$\lambda$|>
@@ -385,28 +385,48 @@ python rob831/scripts/run_hw2.py \
 \section{Bonus! (optional)}
 
 \subsection{Parallelization -- \lbrack15 points\rbrack}
-\begin{answer}[title=Q9.1,height=4cm,width=\linewidth]
+\begin{answer}[title=Q9.1,height=20cm,width=\linewidth]
     % TODO (optional)
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=.99\linewidth]{figs/Q9_parallelization.png}
+    \end{figure}
+    num\_worker\_threads is adaptive according to $\frac{\text{min\_timesteps\_per\_batch}}{\text{average\_path\_length}}$, capped by mp.cpu\_count() - 1
+    I'm training on a laptop with 32 CPU hardware threads.
+
     Difference in training time:
+    $\frac{1.757 \text{hr}}{49.59 \text{min}} \approx 2$
     \vspace{1.0cm}
     \begin{minted}
-[framesep=2mm, fontsize=\scriptsize, breaklines]
-{bash}
-python rob831/scripts/run_hw2.py \
+[framesep=2mm, fontsize=\scriptsize, breaklines, escapeinside=||, mathescape=true]
+{python}
+python rob831/scripts/run_hw2.py --env_name HalfCheetah-v4 --ep_len 150 \
+    --discount 0.95 -n 100 -l 2 -s 32 -b 50000 -lr 0.02 -rtg --nn_baseline --parallel \
+    --exp_name q9_b50000_r0.02_rtg_nnbaseline_parallel
 \end{minted}
 \end{answer}
 
 \subsection{Multiple gradient steps -- \lbrack5 points\rbrack}
-\begin{answer}[title=Q9.1,height=14cm,width=\linewidth]
+\begin{answer}[title=Q9.1,height=20cm,width=\linewidth]
     % TODO (optional)
-    \centering
-    \includegraphics[height=8cm]{example-image-a}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=.99\linewidth]{figs/Q9_multi_gd_step.png}
+    \end{figure}
+    Basically on-policy vs off-policy, off-policy without re-evaluating the policy to get up-to-date action and reward will result in negative effects.
 
+    Even if actions and rewards are re-evaluated after each gradient step, $p_\theta(s)$ still won't change, resulting in a larger exploration space, which makes the policy more robust (covers wider range) but less optimized (for the states it's supposed to optimize).
     \vspace{1.0cm}
     \begin{minted}
 [framesep=2mm, fontsize=\scriptsize, breaklines]
 {bash}
-python rob831/scripts/run_hw2.py \
+python rob831/scripts/run_hw2.py --env_name HalfCheetah-v4 --ep_len 150 \
+    --discount 0.95 -n 100 -l 2 -s 32 -b 50000 -lr 0.02 -rtg --nn_baseline --parallel --num_agent_train_steps_per_iter 4 \
+    --exp_name q9_b50000_r0.02_rtg_nnbaseline_gd_steps_4_parallel
+
+python rob831/scripts/run_hw2.py --env_name HalfCheetah-v4 --ep_len 150 \
+    --discount 0.95 -n 100 -l 2 -s 32 -b 50000 -lr 0.02 -rtg --nn_baseline --parallel --num_agent_train_steps_per_iter 10 \
+    --exp_name q9_b50000_r0.02_rtg_nnbaseline_gd_steps_10_parallel
 \end{minted}
 
 \end{answer}

@@ -118,7 +118,6 @@ def sample_trajectories(
     render=False,
     render_mode=("rgb_array"),
     parallel: bool = False,
-    initial_num_workers: int = 10,
     max_num_workers: int = mp.cpu_count() - 1,
 ):
     # TODO: get this from hw1
@@ -140,7 +139,7 @@ def sample_trajectories(
         print(f"Average path length: {sample_trajectories.average_path_length}")
 
         num_workers = (
-            initial_num_workers
+            max_num_workers
             if sample_trajectories.average_path_length is None
             else int(
                 min(
