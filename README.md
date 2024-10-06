@@ -5,3 +5,7 @@
 ## Author
 
 - **Mukai (Tom Notch) Yu**, <mukaiy@andrew.cmu.edu>
+
+## Caveats
+
+- Original code base given to us is extremely messy, don't blame me.
