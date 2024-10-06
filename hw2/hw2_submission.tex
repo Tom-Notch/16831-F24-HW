@@ -148,7 +148,7 @@ python rob831/scripts/run_hw2.py --env_name CartPole-v0 -n 100 -b 5000 \
 \subsection{Experiment 2 (InvertedPendulum) -- \lbrack15 points total\rbrack}
 
 \subsubsection{Configurations -- \lbrack5 points\rbrack}
-\begin{answer}[title=Q5.2.1,height=10cm,width=\linewidth]
+\begin{answer}[title=Q5.2.1,height=11cm,width=\linewidth]
     % TODO
     \begin{minted}
 [framesep=2mm, fontsize=\scriptsize, breaklines]
@@ -192,7 +192,7 @@ python rob831/scripts/run_hw2.py --env_name InvertedPendulum-v4 \
 \end{answer}
 
 \subsubsection{smallest \textbf{b*} and largest \textbf{r*} (same run) -- \lbrack5 points\rbrack}
-\begin{answer}[title=Q5.2.2,height=4cm,width=\linewidth]
+\begin{answer}[title=Q5.2.2,height=3cm,width=\linewidth]
     % TODO
     b* = 500
 
@@ -238,32 +238,32 @@ python rob831/scripts/run_hw2.py \
 [framesep=2mm, fontsize=\scriptsize, breaklines, escapeinside=||, mathescape=true]
 {python}
 python rob831/scripts/run_hw2.py --env_name HalfCheetah-v4 --ep_len 150 \
-    --discount 0.95 -n 100 -l 2 -s 32 -b 10000 -lr 0.02 \
-    --exp_name q4_search_b10000_lr0.02
+    --discount 0.95 -n 100 -l 2 -s 32 -b 10000 -lr 0.02 --rtg --nn_baseline \
+    --exp_name q4_search_b10000_lr0.02_rtg_nnbaseline
 python rob831/scripts/run_hw2.py --env_name HalfCheetah-v4 --ep_len 150 \
-    --discount 0.95 -n 100 -l 2 -s 32 -b 30000 -lr 0.02 -rtg \
-    --exp_name q4_search_b30000_lr0.02_rtg
+    --discount 0.95 -n 100 -l 2 -s 32 -b 30000 -lr 0.02 --rtg --nn_baseline \
+    --exp_name q4_search_b30000_lr0.02_rtg_nnbaseline
 python rob831/scripts/run_hw2.py --env_name HalfCheetah-v4 --ep_len 150 \
-    --discount 0.95 -n 100 -l 2 -s 32 -b 50000 -lr 0.02 --nn_baseline \
-    --exp_name q4_search_b50000_lr0.02_nnbaseline
+    --discount 0.95 -n 100 -l 2 -s 32 -b 50000 -lr 0.02 --rtg --nn_baseline \
+    --exp_name q4_search_b50000_lr0.02_rtg_nnbaseline
 python rob831/scripts/run_hw2.py --env_name HalfCheetah-v4 --ep_len 150 \
-    --discount 0.95 -n 100 -l 2 -s 32 -b 10000 -lr 0.01 \
-    --exp_name q4_search_b10000_lr0.01
+    --discount 0.95 -n 100 -l 2 -s 32 -b 10000 -lr 0.01 --rtg --nn_baseline \
+    --exp_name q4_search_b10000_lr0.01_rtg_nnbaseline
 python rob831/scripts/run_hw2.py --env_name HalfCheetah-v4 --ep_len 150 \
-    --discount 0.95 -n 100 -l 2 -s 32 -b 30000 -lr 0.01 -rtg \
-    --exp_name q4_search_b30000_lr0.01_rtg
+    --discount 0.95 -n 100 -l 2 -s 32 -b 30000 -lr 0.01 --rtg --nn_baseline \
+    --exp_name q4_search_b30000_lr0.01_rtg_nnbaseline
 python rob831/scripts/run_hw2.py --env_name HalfCheetah-v4 --ep_len 150 \
-    --discount 0.95 -n 100 -l 2 -s 32 -b 50000 -lr 0.01 --nn_baseline \
-    --exp_name q4_search_b50000_lr0.01_nnbaseline
+    --discount 0.95 -n 100 -l 2 -s 32 -b 50000 -lr 0.01 --rtg --nn_baseline \
+    --exp_name q4_search_b50000_lr0.01_rtg_nnbaseline
 python rob831/scripts/run_hw2.py --env_name HalfCheetah-v4 --ep_len 150 \
-    --discount 0.95 -n 100 -l 2 -s 32 -b 10000 -lr 0.005 \
-    --exp_name q4_search_b10000_lr0.005
+    --discount 0.95 -n 100 -l 2 -s 32 -b 10000 -lr 0.005 --rtg --nn_baseline \
+    --exp_name q4_search_b10000_lr0.005_rtg_nnbaseline
 python rob831/scripts/run_hw2.py --env_name HalfCheetah-v4 --ep_len 150 \
-    --discount 0.95 -n 100 -l 2 -s 32 -b 30000 -lr 0.005 -rtg \
-    --exp_name q4_search_b30000_lr0.005_rtg
+    --discount 0.95 -n 100 -l 2 -s 32 -b 30000 -lr 0.005 --rtg --nn_baseline \
+    --exp_name q4_search_b30000_lr0.005_rtg_nnbaseline
 python rob831/scripts/run_hw2.py --env_name HalfCheetah-v4 --ep_len 150 \
-    --discount 0.95 -n 100 -l 2 -s 32 -b 50000 -lr 0.005 --nn_baseline \
-    --exp_name q4_search_b50000_lr0.005_nnbaseline
+    --discount 0.95 -n 100 -l 2 -s 32 -b 50000 -lr 0.005 --rtg --nn_baseline \
+    --exp_name q4_search_b50000_lr0.005_rtg_nnbaseline
 \end{minted}
 \end{answer}
 
@@ -283,6 +283,13 @@ python rob831/scripts/run_hw2.py --env_name HalfCheetah-v4 --ep_len 150 \
     b* = 50000
 
     r* = 0.02
+    \begin{minted}
+[framesep=2mm, fontsize=\scriptsize, breaklines, escapeinside=||, mathescape=true]
+{python}
+python rob831/scripts/run_hw2.py --env_name HalfCheetah-v4 --ep_len 150 \
+    --discount 0.95 -n 100 -l 2 -s 32 -b 50000 -lr 0.02 --rtg --nn_baseline \
+    --exp_name q4_search_b50000_lr0.02_rtg_nnbaseline
+\end{minted}
 \end{answer}
 
 \subsubsection{(Optional) Plot -- \lbrack10 points\rbrack}
