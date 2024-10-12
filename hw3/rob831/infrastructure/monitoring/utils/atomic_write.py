@@ -1,6 +1,6 @@
 # Based on http://stackoverflow.com/questions/2333872/atomic-writing-to-file-with-python
-
 import os
+import sys
 from contextlib import contextmanager
 
 # We would ideally atomically replace any existing file with the new
@@ -11,11 +11,11 @@ from contextlib import contextmanager
 # Correspondingly, we make a best effort, but on Python < 3.3 use a
 # replace method which could result in the file temporarily
 # disappearing.
-import sys
 if sys.version_info >= (3, 3):
     # Python 3.3 and up have a native `replace` method
     from os import replace
 elif sys.platform.startswith("win"):
+
     def replace(src, dst):
         # TODO: on Windows, this will raise if the file is in use,
         # which is possible. We'll need to make this more robust over
@@ -25,24 +25,26 @@ elif sys.platform.startswith("win"):
         except OSError:
             pass
         os.rename(src, dst)
+
 else:
     # POSIX rename() is always atomic
     from os import rename as replace
 
+
 @contextmanager
 def atomic_write(filepath, binary=False, fsync=False):
-    """ Writeable file object that atomically updates a file (using a temporary file). In some cases (namely Python < 3.3 on Windows), this could result in an existing file being temporarily unlinked.
+    """Writeable file object that atomically updates a file (using a temporary file). In some cases (namely Python < 3.3 on Windows), this could result in an existing file being temporarily unlinked.
 
     :param filepath: the file path to be opened
     :param binary: whether to open the file in a binary mode instead of textual
     :param fsync: whether to force write the file to disk
     """
 
-    tmppath = filepath + '~'
+    tmppath = filepath + "~"
     while os.path.isfile(tmppath):
-        tmppath += '~'
+        tmppath += "~"
     try:
-        with open(tmppath, 'wb' if binary else 'w') as file:
+        with open(tmppath, "wb" if binary else "w") as file:
             yield file
             if fsync:
                 file.flush()

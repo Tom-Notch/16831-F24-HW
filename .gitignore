@@ -666,5 +666,5 @@ TSWLatexianTemp*
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,c++,python,jupyternotebooks,ros,ros2,matlab,git
 
-hw1/data
+**/data
 **/.DS_Store
