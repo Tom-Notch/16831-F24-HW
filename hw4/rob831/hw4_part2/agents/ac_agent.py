@@ -1,10 +1,12 @@
 from collections import OrderedDict
 
-from rob831.hw4_part2.critics.bootstrapped_continuous_critic import \
-    BootstrappedContinuousCritic
+from rob831.hw4_part2.critics.bootstrapped_continuous_critic import (
+    BootstrappedContinuousCritic,
+)
 from rob831.hw4_part2.infrastructure.replay_buffer import ReplayBuffer
 from rob831.hw4_part2.infrastructure.utils import *
 from rob831.hw4_part2.policies.MLP_policy import MLPPolicyAC
+
 from .base_agent import BaseAgent
 
 
@@ -15,16 +17,16 @@ class ACAgent(BaseAgent):
         self.env = env
         self.agent_params = agent_params
 
-        self.gamma = self.agent_params['gamma']
-        self.standardize_advantages = self.agent_params['standardize_advantages']
+        self.gamma = self.agent_params["gamma"]
+        self.standardize_advantages = self.agent_params["standardize_advantages"]
 
         self.actor = MLPPolicyAC(
-            self.agent_params['ac_dim'],
-            self.agent_params['ob_dim'],
-            self.agent_params['n_layers'],
-            self.agent_params['size'],
-            self.agent_params['discrete'],
-            self.agent_params['learning_rate'],
+            self.agent_params["ac_dim"],
+            self.agent_params["ob_dim"],
+            self.agent_params["n_layers"],
+            self.agent_params["size"],
+            self.agent_params["discrete"],
+            self.agent_params["learning_rate"],
         )
         self.critic = BootstrappedContinuousCritic(self.agent_params)
 

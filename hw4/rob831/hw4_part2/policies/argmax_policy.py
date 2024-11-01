@@ -1,5 +1,6 @@
-import numpy as np
 import pdb
+
+import numpy as np
 
 
 class ArgMaxPolicy(object):
@@ -18,7 +19,7 @@ class ArgMaxPolicy(object):
         else:
             observation = obs[None]
 
-        ## <DONE> return the action that maxinmizes the Q-value 
+        ## <DONE> return the action that maxinmizes the Q-value
         # at the current observation as the output
         q_values = self.critic.qa_values(observation)
 

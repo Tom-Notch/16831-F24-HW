@@ -1,9 +1,10 @@
-from torch import nn
 import torch
-from torch import optim
-from rob831.hw4_part1.models.base_model import BaseModel
-from rob831.hw4_part1.infrastructure.utils import normalize, unnormalize
 from rob831.hw4_part1.infrastructure import pytorch_util as ptu
+from rob831.hw4_part1.infrastructure.utils import normalize
+from rob831.hw4_part1.infrastructure.utils import unnormalize
+from rob831.hw4_part1.models.base_model import BaseModel
+from torch import nn
+from torch import optim
 
 
 class FFModel(nn.Module, BaseModel):
@@ -36,13 +37,13 @@ class FFModel(nn.Module, BaseModel):
         self.delta_std = None
 
     def update_statistics(
-            self,
-            obs_mean,
-            obs_std,
-            acs_mean,
-            acs_std,
-            delta_mean,
-            delta_std,
+        self,
+        obs_mean,
+        obs_std,
+        acs_mean,
+        acs_std,
+        delta_mean,
+        delta_std,
     ):
         self.obs_mean = ptu.from_numpy(obs_mean)
         self.obs_std = ptu.from_numpy(obs_std)
@@ -52,15 +53,15 @@ class FFModel(nn.Module, BaseModel):
         self.delta_std = ptu.from_numpy(delta_std)
 
     def forward(
-            self,
-            obs_unnormalized,
-            acs_unnormalized,
-            obs_mean,
-            obs_std,
-            acs_mean,
-            acs_std,
-            delta_mean,
-            delta_std,
+        self,
+        obs_unnormalized,
+        acs_unnormalized,
+        obs_mean,
+        obs_std,
+        acs_mean,
+        acs_std,
+        delta_mean,
+        delta_std,
     ):
         """
         :param obs_unnormalized: Unnormalized observations
@@ -78,8 +79,8 @@ class FFModel(nn.Module, BaseModel):
                 unnormalized) output of the delta network. This is needed
         """
         # normalize input data to mean 0, std 1
-        obs_normalized = # TODO(Q1)
-        acs_normalized = # TODO(Q1)
+        # TODO(Q1) obs_normalized =
+        # TODO(Q1) acs_normalized =
 
         # predicted change in obs
         concatenated_input = torch.cat([obs_normalized, acs_normalized], dim=1)
@@ -87,8 +88,8 @@ class FFModel(nn.Module, BaseModel):
         # TODO(Q1) compute delta_pred_normalized and next_obs_pred
         # Hint: as described in the PDF, the output of the network is the
         # *normalized change* in state, i.e. normalized(s_t+1 - s_t).
-        delta_pred_normalized = # TODO(Q1)
-        next_obs_pred = # TODO(Q1)
+        # TODO(Q1) delta_pred_normalized =
+        # TODO(Q1) next_obs_pred =
         return next_obs_pred, delta_pred_normalized
 
     def get_prediction(self, obs, acs, data_statistics):
@@ -105,7 +106,7 @@ class FFModel(nn.Module, BaseModel):
              - 'delta_std'
         :return: a numpy array of the predicted next-states (s_t+1)
         """
-        prediction = # TODO(Q1) get the predicted next-states (s_t+1) as a numpy array
+        # TODO(Q1) get the predicted next-states (s_t+1) as a numpy array prediction =
         # Hint: `self(...)` returns a tuple, but you only need to use one of the
         # outputs.
         return prediction
@@ -125,12 +126,12 @@ class FFModel(nn.Module, BaseModel):
              - 'delta_std'
         :return:
         """
-        target = # TODO(Q1) compute the normalized target for the model.
+        # TODO(Q1) compute the normalized target for the model. target =
         # Hint: you should use `data_statistics['delta_mean']` and
         # `data_statistics['delta_std']`, which keep track of the mean
         # and standard deviation of the model.
 
-        loss = # TODO(Q1) compute the loss
+        # TODO(Q1) compute the loss loss =
         # Hint: `self(...)` returns a tuple, but you only need to use one of the
         # outputs.
 
@@ -139,5 +140,5 @@ class FFModel(nn.Module, BaseModel):
         self.optimizer.step()
 
         return {
-            'Training Loss': ptu.to_numpy(loss),
+            "Training Loss": ptu.to_numpy(loss),
         }

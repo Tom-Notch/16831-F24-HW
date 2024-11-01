@@ -1,26 +1,28 @@
-from .base_agent import BaseAgent
-from .sac_agent import SACAgent
-from .mb_agent import MBAgent
 from rob831.hw4_part1.infrastructure.replay_buffer import ReplayBuffer
 from rob831.hw4_part1.infrastructure.utils import *
+
+from .base_agent import BaseAgent
+from .mb_agent import MBAgent
+from .sac_agent import SACAgent
+
 
 class MBPOAgent(BaseAgent):
     def __init__(self, env, agent_params):
         super(MBPOAgent, self).__init__()
         self.mb_agent = MBAgent(env, agent_params)
-        self.sac_agent = SACAgent(env, agent_params['sac_params'])
+        self.sac_agent = SACAgent(env, agent_params["sac_params"])
         self.env = env
 
         self.actor = self.sac_agent.actor
 
     def train(self, *args):
         return self.mb_agent.train(*args)
-    
+
     def train_sac(self, *args):
         return self.sac_agent.train(*args)
 
     def collect_model_trajectory(self, rollout_length=1):
-        # TODO (Q6): Collect a trajectory of rollout_length from the learned 
+        # TODO (Q6): Collect a trajectory of rollout_length from the learned
         # dynamics model. Start from a state sampled from the replay buffer.
 
         # sample 1 transition from self.mb_agent.replay_buffer
@@ -30,8 +32,8 @@ class MBPOAgent(BaseAgent):
         for _ in range(rollout_length):
             # get the action from the policy
             ac = TODO
-            
-            # determine the next observation by averaging the prediction of all the 
+
+            # determine the next observation by averaging the prediction of all the
             # dynamics models in the ensemble
             next_ob = TODO
 

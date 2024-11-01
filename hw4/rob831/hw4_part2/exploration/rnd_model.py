@@ -1,12 +1,15 @@
-from rob831.hw4_part2.infrastructure import pytorch_util as ptu
-from .base_exploration_model import BaseExplorationModel
-import torch.optim as optim
-from torch import nn
 import torch
+import torch.optim as optim
+from rob831.hw4_part2.infrastructure import pytorch_util as ptu
+from torch import nn
+
+from .base_exploration_model import BaseExplorationModel
+
 
 def init_method_1(model):
     model.weight.data.uniform_()
     model.bias.data.uniform_()
+
 
 def init_method_2(model):
     model.weight.data.normal_()
@@ -16,10 +19,10 @@ def init_method_2(model):
 class RNDModel(nn.Module, BaseExplorationModel):
     def __init__(self, hparams, optimizer_spec, **kwargs):
         super().__init__(**kwargs)
-        self.ob_dim = hparams['ob_dim']
-        self.output_size = hparams['rnd_output_size']
-        self.n_layers = hparams['rnd_n_layers']
-        self.size = hparams['rnd_size']
+        self.ob_dim = hparams["ob_dim"]
+        self.output_size = hparams["rnd_output_size"]
+        self.n_layers = hparams["rnd_n_layers"]
+        self.size = hparams["rnd_size"]
         self.optimizer_spec = optimizer_spec
 
         # <TODO>: Create two neural networks:
