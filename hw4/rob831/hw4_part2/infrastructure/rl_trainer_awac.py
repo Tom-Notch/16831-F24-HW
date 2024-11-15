@@ -472,7 +472,7 @@ class RL_Trainer(object):
         import matplotlib.pyplot as plt
 
         self.fig = plt.figure()
-        filepath = lambda name: self.params["logdir"] + "/curr_{}.png".format(name)
+        filepath = lambda name: self.params["logdir"] + "/curr_{}.pdf".format(name)
 
         num_states = self.agent.replay_buffer.num_in_buffer - 2
         states = self.agent.replay_buffer.obs[:num_states]

@@ -75,7 +75,9 @@
 
 \section{Problem 1: Dynamics Model Training -- \lbrack10 points total\rbrack}
 \begin{answer}[title=Theory questions,height=4.5cm,width=\linewidth]
-    The third model performs the best, because more training steps per iteration improves convergence, and larger MLP interpolates better.
+    The third model performs the best, because it achieves the least $MPE = 0.07804489$.
+
+    More training steps per iteration improves convergence a lot, and larger MLP interpolates better.
 \end{answer}
 
 
@@ -83,7 +85,7 @@
     % TODO
     \begin{figure}[H]
         \centering
-        \includegraphics[height=7cm]{figs/Q1_1.png}
+        \includegraphics[height=7cm]{figs/P1_1.pdf}
         \caption{500 training steps per iteration, 1 x 32 MLP.}
     \end{figure}
 \end{answer}
@@ -92,7 +94,7 @@
     % TODO
     \begin{figure}[H]
         \centering
-        \includegraphics[height=7cm]{figs/Q1_2.png}
+        \includegraphics[height=7cm]{figs/P1_2.pdf}
         \caption{5 training steps per iteration, 2 x 250 MLP.}
     \end{figure}
 \end{answer}
@@ -101,7 +103,7 @@
     % TODO
     \begin{figure}[H]
         \centering
-        \includegraphics[height=7cm]{figs/Q1_3.png}
+        \includegraphics[height=7cm]{figs/P1_3.pdf}
         \caption{500 training steps per iteration, 2 x 250 MLP.}
     \end{figure}
 \end{answer}
@@ -109,8 +111,11 @@
 \section{Problem 2: Action Selection}
 \begin{answer}[title=Plot,height=9.5cm,width=\linewidth]
     % TODO
-    \centering
-    \includegraphics[height=8cm]{example-image-a}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[height=7cm]{figs/P2.pdf}
+        \caption{Optimizing the Dynamics Model where MPC needs to be used improves a lot.}
+    \end{figure}
 \end{answer}
 
 

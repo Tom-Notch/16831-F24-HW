@@ -785,7 +785,7 @@ class Pointmass(gym.Env):
         return self._normalize_obs(self.state.copy())
 
     def set_logdir(self, path):
-        self.traj_filepath = path + "last_traj.png"
+        self.traj_filepath = path + "last_traj.pdf"
 
     def _get_distance(self, obs, goal):
         """Compute the shortest path distance.

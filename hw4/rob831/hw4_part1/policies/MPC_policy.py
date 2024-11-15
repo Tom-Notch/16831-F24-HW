@@ -95,12 +95,10 @@ class MPCPolicy(BasePolicy):
         #
         # Then, return the mean predictions across all ensembles.
         # Hint: the return value should be an array of shape (N,)
-        rewards = np.empty((self.N, len(self.dyn_models)))
-        for model in self.dyn_models:
-            rewards = np.append(
-                rewards,
-                self.calculate_sum_of_rewards(obs, candidate_action_sequences, model),
-                axis=1,
+        rewards = np.empty((len(self.dyn_models), self.N))
+        for i, model in enumerate(self.dyn_models):
+            rewards[i] = self.calculate_sum_of_rewards(
+                obs, candidate_action_sequences, model
             )
 
         return np.mean(rewards, axis=0)
@@ -123,9 +121,12 @@ class MPCPolicy(BasePolicy):
             )
 
             # pick the action sequence and return the 1st element of that sequence
-            best_action_sequence = None  # TODO (Q2)
-            action_to_take = None  # TODO (Q2)
-            return action_to_take[None]  # Unsqueeze the first index
+            best_action_sequence = candidate_action_sequences[
+                np.argmax(predicted_rewards)
+            ]  # TODO (Q2)
+            action_to_take = best_action_sequence[0]  # TODO (Q2)
+
+            return action_to_take  # Unsqueeze the first index
 
     def calculate_sum_of_rewards(self, obs, candidate_action_sequences, model):
         """
@@ -140,7 +141,6 @@ class MPCPolicy(BasePolicy):
         :return: numpy array with the sum of rewards for each action sequence.
         The array should have shape [N].
         """
-        sum_of_rewards = None  # TODO (Q2)
         # For each candidate action sequence, predict a sequence of
         # states for each dynamics model in your ensemble.
         # Once you have a sequence of predicted states from each model in
@@ -152,4 +152,21 @@ class MPCPolicy(BasePolicy):
         # Hint: Remember that the model can process observations and actions
         #       in batch, which can be much faster than looping through each
         #       action sequence.
+        (N, H, _) = candidate_action_sequences.shape
+
+        predicted_obs = np.empty((N, H + 1, self.ob_dim))
+        predicted_obs[:, 0, :] = np.tile(
+            obs, (N, 1)
+        )  # Broadcast the initial observation
+        rewards = np.empty((N, H))
+        for action_idx in range(H):
+            # import ipdb; ipdb.set_trace()
+            acs = candidate_action_sequences[:, action_idx, :]
+            predicted_obs[:, action_idx + 1, :] = model.get_prediction(
+                predicted_obs[:, action_idx, :], acs, self.data_statistics
+            )
+            reward, _ = self.env.get_reward(predicted_obs[:, action_idx + 1, :], acs)
+            rewards[:, action_idx] = np.array(reward)
+
+        sum_of_rewards = np.sum(rewards, axis=-1)  # TODO (Q2)
         return sum_of_rewards

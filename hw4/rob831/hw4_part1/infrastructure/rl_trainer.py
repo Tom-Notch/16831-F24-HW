@@ -374,7 +374,7 @@ class RL_Trainer(object):
             plt.plot(pred_states[:, i], "r")
         self.fig.suptitle("MPE: " + str(mpe))
         self.fig.savefig(
-            self.params["logdir"] + "/itr_" + str(itr) + "_predictions.png",
+            self.params["logdir"] + "/itr_" + str(itr) + "_predictions.pdf",
             dpi=200,
             bbox_inches="tight",
         )
@@ -385,7 +385,7 @@ class RL_Trainer(object):
         self.fig.clf()
         plt.plot(all_losses)
         self.fig.savefig(
-            self.params["logdir"] + "/itr_" + str(itr) + "_losses.png",
+            self.params["logdir"] + "/itr_" + str(itr) + "_losses.pdf",
             dpi=200,
             bbox_inches="tight",
         )
