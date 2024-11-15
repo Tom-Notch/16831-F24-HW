@@ -126,7 +126,8 @@ class MPCPolicy(BasePolicy):
             ]  # TODO (Q2)
             action_to_take = best_action_sequence[0]  # TODO (Q2)
 
-            return action_to_take  # Unsqueeze the first index
+            #! Can you write shitter code? I can't
+            return action_to_take[None, :]  # Unsqueeze the first index
 
     def calculate_sum_of_rewards(self, obs, candidate_action_sequences, model):
         """
