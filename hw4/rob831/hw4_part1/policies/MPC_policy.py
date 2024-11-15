@@ -1,3 +1,5 @@
+import random
+
 import numpy as np
 
 from .base_policy import BasePolicy
@@ -59,6 +61,10 @@ class MPCPolicy(BasePolicy):
             # TODO(Q1) uniformly sample trajectories and return an array of
             # dimensions (num_sequences, horizon, self.ac_dim) in the range
             # [self.low, self.high]
+            random_action_sequences = np.random.uniform(
+                self.low, self.high, (num_sequences, horizon, self.ac_dim)
+            )
+
             return random_action_sequences
         elif self.sample_strategy == "cem":
             # TODO(Q5): Implement action selection using CEM.
@@ -89,10 +95,15 @@ class MPCPolicy(BasePolicy):
         #
         # Then, return the mean predictions across all ensembles.
         # Hint: the return value should be an array of shape (N,)
+        rewards = np.empty((self.N, len(self.dyn_models)))
         for model in self.dyn_models:
-            pass
+            rewards = np.append(
+                rewards,
+                self.calculate_sum_of_rewards(obs, candidate_action_sequences, model),
+                axis=1,
+            )
 
-        return TODO
+        return np.mean(rewards, axis=0)
 
     def get_action(self, obs):
         if self.data_statistics is None:
