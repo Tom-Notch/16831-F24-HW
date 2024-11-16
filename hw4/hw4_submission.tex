@@ -13,6 +13,7 @@
 \usepackage{parskip}
 \usepackage{natbib}
 \usepackage{listings}
+\usepackage{subcaption}
 
 \usepackage[many]{tcolorbox}
 \usepackage{minted}
@@ -126,7 +127,7 @@
     \begin{figure}[H]
         \centering
         \includegraphics[width=.99\linewidth]{figs/P3_1.png}
-        \caption{Average evaluation return over training iterations. \\
+        \caption{Average evaluation return over training iterations.
             \color{orange}{Orange: cheetah.}
             \color{violet}{Purple: obstacles.}
             \color{green}{Green: reacher.}}
@@ -138,7 +139,7 @@
     \begin{figure}[H]
         \centering
         \includegraphics[width=.99\linewidth]{figs/P3_2.png}
-        \caption{Standard deviation evaluation return over training iterations. \\
+        \caption{Standard deviation evaluation return over training iterations.
             \color{orange}{Orange: cheetah.}
             \color{violet}{Purple: obstacles.}
             \color{green}{Green: reacher.}}
@@ -150,7 +151,7 @@
     \begin{figure}[H]
         \centering
         \includegraphics[width=.99\linewidth]{figs/P3_3.png}
-        \caption{Average training return over training iterations. \\
+        \caption{Average training return over training iterations.
             \color{orange}{Orange: cheetah.}
             \color{violet}{Purple: obstacles.}
             \color{green}{Green: reacher.}}
@@ -160,55 +161,105 @@
 \section{Problem 4: Hyper-parameter Comparison}
 \begin{answer}[title=Plot,height=9.5cm,width=\linewidth]
     % TODO
-    \centering
-    \includegraphics[height=8cm]{example-image-a}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[height=7cm]{figs/P4_ensemble_size.pdf}
+        \caption{Effect of ensemble size seems not so significant, but it could be due to not big enough.
+            It most likely only reduces variance partially.}
+    \end{figure}
 \end{answer}
 
 \begin{answer}[title=Plot,height=9.5cm,width=\linewidth]
     % TODO
-    \centering
-    \includegraphics[height=8cm]{example-image-a}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[height=7cm]{figs/P4_number_of_candidate_action_sequences.pdf}
+        \caption{Effect of \# candidate action sequences is more significant, because it essentially gives MPC more choice on which sequence's first action to execute.
+            It also reduces variance.}
+    \end{figure}
 \end{answer}
 
 \begin{answer}[title=Plot,height=9.5cm,width=\linewidth]
     % TODO
-    \centering
-    \includegraphics[height=8cm]{example-image-a}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[height=7cm]{figs/P4_planning_horizon.pdf}
+        \caption{Effect of planning horizon is not so significant, because choosing from a small set of sequence with similar performance won't affect much, and we are only executing the first action of a sequence.}
+    \end{figure}
 \end{answer}
 
 
 \section{Problem 5: Hyper-parameter Comparison (Bonus)}
-\begin{answer}[title=Plot,height=9.5cm,width=\linewidth]
+\begin{answer}[title=Plot,height=11.5cm,width=\linewidth]
     % TODO
-    \centering
-    \includegraphics[height=8cm]{example-image-a}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[height=7cm]{figs/P5.pdf}
+        \caption{Average Evaluation Return comparison between Random Shooting and Cross Entropy Method.}
+    \end{figure}
+    Gaussian means and variances are modeled done to the very bottom.
+    CEM performs much better than RS with even a few iterations.
+    More iterations improves action sampling on a temporarily fixed MPC policy, there's still plenty of room for improvement on hyper parameters.
 \end{answer}
 
 
 \section{Problem 6: Exploration (Bonus)}
 \begin{answer}[title=Plot,height=9.5cm,width=\linewidth]
     % TODO
-    \centering
-    \includegraphics[height=8cm]{example-image-a}
+    \begin{figure}[H]
+        \centering
+        \begin{subfigure}[b]{.45\linewidth}
+            \centering
+            \includegraphics[width=.99\linewidth]{figs/P6_easy_random_density.pdf}
+            \caption{Random.}
+        \end{subfigure}
+        \begin{subfigure}[b]{.45\linewidth}
+            \centering
+            \includegraphics[width=.99\linewidth]{figs/P6_easy_rnd_density.pdf}
+            \caption{RND.}
+        \end{subfigure}
+        \caption{Final state density in Point Mass Easy Environment.}
+    \end{figure}
 \end{answer}
 
 \begin{answer}[title=Plot,height=9.5cm,width=\linewidth]
     % TODO
-    \centering
-    \includegraphics[height=8cm]{example-image-a}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[height=7cm]{figs/P6_easy_return.pdf}
+        \caption{Average Evaluation Return in Point Mass Easy Environment.
+            \color{violet}{Purple: RND.}
+            \color{green}{Green: Random.}}
+    \end{figure}
 \end{answer}
 
 \begin{answer}[title=Plot,height=9.5cm,width=\linewidth]
     % TODO
-    \centering
-    \includegraphics[height=8cm]{example-image-a}
+    \begin{figure}[H]
+        \centering
+        \begin{subfigure}[b]{.45\linewidth}
+            \centering
+            \includegraphics[width=.99\linewidth]{figs/P6_hard_random_density.pdf}
+            \caption{Random.}
+        \end{subfigure}
+        \begin{subfigure}[b]{.45\linewidth}
+            \centering
+            \includegraphics[width=.99\linewidth]{figs/P6_hard_rnd_density.pdf}
+            \caption{RND.}
+        \end{subfigure}
+        \caption{Final state density in Point Mass Hard Environment.}
+    \end{figure}
 \end{answer}
 
 \begin{answer}[title=Plot,height=9.5cm,width=\linewidth]
     % TODO
-    \centering
-    \includegraphics[height=8cm]{example-image-a}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[height=7cm]{figs/P6_hard_return.pdf}
+        \caption{Average Evaluation Return in Point Mass Hard Environment.
+            \color{orange}{Orange: RND.}
+            \color{gray}{Gray: Random.}}
+    \end{figure}
 \end{answer}
-
 
 \end{document}

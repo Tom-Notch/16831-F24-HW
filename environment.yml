@@ -39,6 +39,7 @@ dependencies:
   - executing=2.1.0
   - filelock=3.16.1
   - flatbuffers=24.3.25
+  - fsspec=2024.10.0
   - gast=0.5.5
   - giflib=5.2.2
   - gmp=6.3.0
@@ -163,14 +164,12 @@ dependencies:
   - stack_data=0.6.2
   - sympy=1.13.3
   - tbb=2021.13.0
-  - tensorboard=2.17.1
-  - tensorboard-data-server=0.7.0
   - tensorflow=2.17.0
   - tensorflow-base=2.17.0
-  - tensorflow-estimator=2.17.0
   - termcolor=2.5.0
   - tk=8.6.13
   - toml=0.10.2
+  - tomli=2.1.0
   - torchtriton=3.0.0
   - tornado=6.4.1
   - traitlets=5.14.3
@@ -191,6 +190,9 @@ dependencies:
   - pip:
       - future==1.0.0
       - glfw==2.7.0
-      - protobuf==3.20.0
+      - protobuf==5.28.3
       - pyglet==1.5.0
+      - tensorboard==2.17.0
+      - tensorboard-data-server==0.7.2
+      - tensorboardx==2.6.2.2
 prefix: /home/tomnotch/miniforge3/envs/rob831
